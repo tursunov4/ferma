@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Qoramolchilik fermasi, 500 bosh — 3D model</title>
+<title>Qoramolchilik fermasi, 1000 bosh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -147,15 +147,17 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
 
   <aside class="stamp" aria-label="Loyiha maʼlumotlari">
     <header>
-      <h1>Qoramolchilik fermasi, 500 bosh</h1>
+      <h1>Qoramolchilik fermasi, 1000 bosh</h1>
       <p>Aralash yoʻnalish: sut va goʻsht. Sudrab aylantiring, binoni bossangiz maʼlumoti chiqadi.</p>
     </header>
     <details id="dInfo">
       <summary>Umumiy maʼlumot</summary>
       <dl class="meta">
-        <dt>Hudud</dt><dd>320 × 250 m, 8 ga</dd>
-        <dt>Binolar</dt><dd>24 ta</dd>
-        <dt>Asosiy poda</dt><dd>200 bosh sigir</dd>
+        <dt>Hudud</dt><dd>440 × 320 m, 14 ga</dd>
+        <dt>Binolar</dt><dd>25 ta</dd>
+        <dt>Asosiy poda</dt><dd>400 bosh sigir</dd>
+        <dt>Yosh mollar</dt><dd>240 boʻrdoqi, 200 gʻunajin, 160 buzoq</dd>
+        <dt>Mahsulot</dt><dd>~2 200 t sut, ~150 t goʻsht (tirik vazn) yiliga</dd>
         <dt>Shamol</dt><dd>sharqdan (hisobiy)</dd>
       </dl>
       <ul class="zones" id="zones"></ul>
@@ -218,31 +220,34 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
     E: { name: 'Goʻng va muhandislik', c: '#C46A8A' }
   };
 
+  var SITE_W = 440, SITE_D = 320, GATE_Y = 174;
+
   var B = [
-    { n: 1, z: 'A', name: 'Nazorat-oʻtkazish punkti va dezbarrier', x: 304, y: 118, w: 12, d: 6, kind: 'flat', h: 3.5, size: '12 × 6 m', area: '72 m²', cap: '9 × 3,5 m avtomobil dezbarrieri', desc: 'Barcha transport dezbarrierdan oʻtadi, xodimlar sanitariya oʻtkazgich orqali kiradi.' },
-    { n: 2, z: 'A', name: 'Maʼmuriy-maishiy bino', x: 280, y: 100, w: 30, d: 12, kind: 'flat', h: 7, windows: true, size: '30 × 12 m', area: '360 m²', cap: '34 xodim', desc: 'Ofis, xodimlar xonasi, oshxona, dush va kiyim almashtirish xonasi.' },
-    { n: 3, z: 'A', name: 'Avtotarozi', x: 276, y: 130.5, w: 18, d: 3, kind: 'slab', h: 0.35, size: '18 × 3 m', area: '54 m²', cap: '60 t', desc: 'Sut, yem va mollarni kirish-chiqishda tortish uchun.' },
-    { n: 4, z: 'A', name: 'Texnika parki va ustaxona', x: 272, y: 150, w: 42, d: 18, kind: 'gable', eave: 6, ridge: 8.5, axis: 'x', doors: true, size: '42 × 18 m', area: '756 m²', cap: '10 ta texnika', desc: 'Traktorlar, mikser-tarqatgichlar, yuklagichlar va taʼmirlash ustaxonasi.' },
-    { n: 5, z: 'B', name: 'Sut molxonasi', x: 105, y: 95, w: 78, d: 30, kind: 'barn', eave: 4.5, ridge: 9.5, axis: 'x', vent: true, size: '78 × 30 m', area: '2 340 m²', cap: '180 boks', desc: '4 qator boks, markazda 5 m yem stoli, koʻtariladigan yon pardalar, ventilyatorlar va tizmadagi havo tirqishi.' },
-    { n: 6, z: 'B', name: 'Sogʻish bloki', x: 191, y: 101, w: 42, d: 18, kind: 'parlor', eave: 5, ridge: 7.5, axis: 'x', size: '42 × 18 m', area: '756 m²', cap: '2×12 sogʻish joyi, 2 × 4 000 l tank', desc: 'Kutish maydoni, «Archa» tipidagi 2×12 sogʻish zali, sut xonasi va texnik xona. Molxonaga galereya orqali ulangan.' },
-    { n: 7, z: 'B', name: 'Tugʻruqxona va quruq sigirlar bloki', x: 105, y: 145, w: 54, d: 21, kind: 'barn', eave: 4, ridge: 7.5, axis: 'x', size: '54 × 21 m', area: '1 134 m²', cap: '30 boks + 12 tugʻruq katagi', desc: 'Tugʻishdan oldingi 60 kunda sigirlar shu yerda turadi.' },
-    { n: 8, z: 'B', name: 'Buzoqxona', x: 175, y: 145, w: 48, d: 18, kind: 'barn', eave: 3.5, ridge: 6.5, axis: 'x', size: '48 × 18 m', area: '864 m²', cap: '40 individual + 60 guruhli joy', desc: 'Profilaktoriy va 2–6 oylik buzoqlar uchun guruhli kataklar; janubida individual buzoq domiklari.' },
-    { n: 9, z: 'B', name: 'Gʻunajinlar molxonasi', x: 105, y: 180, w: 60, d: 21, kind: 'barn', eave: 4, ridge: 7.5, axis: 'x', size: '60 × 21 m', area: '1 260 m²', cap: '80 joy', desc: '6–24 oylik gʻunajinlar va boʻgʻoz tanalar.' },
-    { n: 10, z: 'B', name: 'Boʻrdoqi molxonasi', x: 180, y: 180, w: 66, d: 21, kind: 'barn', eave: 4, ridge: 7.5, axis: 'x', size: '66 × 21 m', area: '1 386 m²', cap: '100 joy', desc: '6–18 oylik buqachalar guruhli kataklarda boqiladi.' },
-    { n: 11, z: 'B', name: 'Sayr maydonchalari', x: 105, y: 214, w: 141, d: 22, kind: 'yard', size: '141 × 22 m', area: '~3 000 m²', cap: 'quruq sigir, gʻunajin, buqachalar', desc: 'Soyabonli ochiq maydonchalar, uch guruhga boʻlingan.' },
-    { n: 12, z: 'C', name: 'Silos-senaj transheyalari', x: 105, y: 15, w: 50, d: 50, kind: 'silo', size: '4 × (50 × 12 m), devor 3 m', area: '2 400 m²', cap: '7 200 m³', desc: '3 ta transheya makkajoʻxori silosi, 1 tasi beda senaji uchun. Ochiq tomoni yem yoʻliga qaragan.' },
-    { n: 13, z: 'C', name: 'Pichan ombori', x: 268, y: 12, w: 18, d: 60, kind: 'naves', eave: 6.5, ridge: 8.5, axis: 'z', fill: 'hay', size: '60 × 18 m', area: '1 080 m²', cap: '~750 t pichan', desc: 'Yon tomonlari ochiq naves, pol 30 sm koʻtarilgan.' },
-    { n: 14, z: 'C', name: 'Somon ombori', x: 298, y: 12, w: 18, d: 48, kind: 'naves', eave: 6, ridge: 8, axis: 'z', fill: 'straw', size: '48 × 18 m', area: '864 m²', cap: '~350 t somon', desc: 'Toʻshama uchun somon zaxirasi.' },
-    { n: 15, z: 'C', name: 'Don ombori va yem tayyorlash sexi', x: 180, y: 30, w: 36, d: 18, kind: 'gable', eave: 6, ridge: 8.5, axis: 'x', bunkers: true, size: '36 × 18 m', area: '648 m²', cap: '2 × 60 t bunker', desc: 'Don maydalagich, aralashtirgich, premiks dozatori va qopli yem ombori.' },
-    { n: 16, z: 'D', name: 'Veterinariya punkti', x: 72, y: 95, w: 18, d: 12, kind: 'gable', eave: 3.5, ridge: 5.5, axis: 'x', size: '18 × 12 m', area: '216 m²', cap: 'davolash va urugʻlantirish xonasi', desc: 'Davolash, sunʼiy urugʻlantirish, dori va urugʻ saqlash.' },
-    { n: 17, z: 'D', name: 'Karantin binosi', x: 52, y: 15, w: 24, d: 12, kind: 'gable', eave: 3.5, ridge: 5.5, axis: 'x', size: '24 × 12 m', area: '288 m²', cap: '20 joy', desc: 'Yangi keltirilgan mollar 30 kun shu yerda saqlanadi.' },
-    { n: 18, z: 'D', name: 'Izolyator', x: 14, y: 15, w: 18, d: 12, kind: 'gable', eave: 3.5, ridge: 5.5, axis: 'x', size: '18 × 12 m', area: '216 m²', cap: '10 joy', desc: 'Kasal mollarni ajratib davolash uchun.' },
-    { n: 19, z: 'D', name: 'Soʻyish, sovutish va muzlatish bloki', x: 14, y: 50, w: 30, d: 18, kind: 'cold', h: 6, size: '30 × 18 m', area: '540 m²', cap: 'sutkasiga 5 bosh, 15 t muzlatish', desc: 'Sovutish kamerasi 0…+4 °C, shok muzlatish −35 °C, muzlatgich −18…−22 °C. «Tomlarsiz» rejimida xonalar koʻrinadi.' },
-    { n: 20, z: 'E', name: 'Goʻng saqlash maydoni', x: 14, y: 150, w: 60, d: 30, kind: 'manure', size: '60 × 30 m', area: '1 800 m²', cap: '3 600 m³', desc: 'Beton maydon, uch tomoni devorli; 6 oylik zaxira.' },
-    { n: 21, z: 'E', name: 'Suyuq fraksiya hovuzi', x: 14, y: 195, w: 40, d: 25, kind: 'lagoon', size: '40 × 25 m', area: '1 000 m²', cap: '3 000 m³', desc: 'Geomembrana bilan qoplangan hovuz.' },
-    { n: 22, z: 'E', name: 'Biogaz qurilmasi', x: 14, y: 92, w: 30, d: 20, kind: 'digester', size: '30 × 20 m', area: '~600 m²', cap: '~400 m³ biogaz sutkasiga', desc: 'Ixtiyoriy: goʻngdan 30–40 kVt elektr va issiqlik olinadi.' },
-    { n: 23, z: 'E', name: 'Suv quduqlari va rezervuarlar', x: 266, y: 82, w: 34, d: 12, kind: 'water', size: '34 × 12 m', area: '300 m²', cap: '2 × 100 m³', desc: '2 ta quduq (biri zaxira), rezervuarlar va nasos stansiyasi.' },
-    { n: 24, z: 'E', name: 'Transformator va dizel generator', x: 302, y: 66, w: 12, d: 6, kind: 'trafo', size: '12 × 6 m', area: '72 m²', cap: '400 kVA + 200 kVA', desc: 'Sogʻish va sovutish elektrsiz qolmasligi uchun avtomatik zaxira generator.' }
+    { n: 1, z: 'A', name: 'Nazorat-oʻtkazish punkti va dezbarrier', x: 424, y: 158, w: 12, d: 6, kind: 'flat', h: 3.5, disinf: [425, 170.3, 9, 7.4], size: '12 × 6 m', area: '72 m²', cap: '9 × 3,5 m avtomobil dezbarrieri', desc: 'Barcha transport dezbarrierdan oʻtadi, xodimlar sanitariya oʻtkazgich orqali kiradi.' },
+    { n: 2, z: 'A', name: 'Maʼmuriy-maishiy bino', x: 400, y: 136, w: 36, d: 14, kind: 'flat', h: 7, windows: true, size: '36 × 14 m', area: '504 m²', cap: '60 xodim', desc: 'Ofis, laboratoriya, xodimlar xonasi, oshxona, dush va kiyim almashtirish xonasi.' },
+    { n: 3, z: 'A', name: 'Avtotarozi', x: 396, y: 181.5, w: 18, d: 3, kind: 'slab', h: 0.35, size: '18 × 3 m', area: '54 m²', cap: '80 t', desc: 'Sut, yem va mollarni kirish-chiqishda tortish uchun.' },
+    { n: 4, z: 'A', name: 'Texnika parki va ustaxona', x: 376, y: 194, w: 54, d: 20, kind: 'gable', eave: 6, ridge: 8.5, axis: 'x', doors: true, size: '54 × 20 m', area: '1 080 m²', cap: '16 ta texnika', desc: 'Traktorlar, 2 ta mikser-tarqatgich, yuklagichlar, goʻng tashuvchi va taʼmirlash ustaxonasi.' },
+    { n: 5, z: 'B', name: 'Sut molxonasi №1', x: 120, y: 92, w: 78, d: 30, kind: 'barn', eave: 4.5, ridge: 9.5, axis: 'x', vent: true, inner: 'dairy', size: '78 × 30 m', area: '2 340 m²', cap: '180 boks', desc: '4 qator boks, markazda 5 m yem stoli, koʻtariladigan yon pardalar, ventilyatorlar va tizmadagi havo tirqishi. Sogʻish blokiga galereya orqali ulangan.' },
+    { n: 6, z: 'B', name: 'Sut molxonasi №2', x: 120, y: 132, w: 78, d: 30, kind: 'barn', eave: 4.5, ridge: 9.5, axis: 'x', vent: true, inner: 'dairy', size: '78 × 30 m', area: '2 340 m²', cap: '180 boks', desc: 'Birinchi molxona bilan bir xil. Ikkalasida jami 360 boks: 340 sogʻin sigir va zaxira.' },
+    { n: 7, z: 'B', name: 'Sogʻish bloki', x: 210, y: 114, w: 56, d: 21, kind: 'parlor', eave: 5, ridge: 7.5, axis: 'x', galleries: [[198, 114, 12, 6], [198, 129, 12, 6]], size: '56 × 21 m', area: '1 176 m²', cap: '2×20 sogʻish joyi, 2 × 8 000 l tank', desc: 'Kutish maydoni, «Archa» tipidagi 2×20 sogʻish zali, sut xonasi va texnik xona. Ikkala molxonaga galereya orqali ulangan; kuniga 3 marta sogʻiladi.' },
+    { n: 8, z: 'B', name: 'Tugʻruqxona va quruq sigirlar bloki', x: 120, y: 188, w: 66, d: 21, kind: 'barn', eave: 4, ridge: 7.5, axis: 'x', inner: 'pens', cows: 40, scale: 1, size: '66 × 21 m', area: '1 386 m²', cap: '50 boks + 20 tugʻruq katagi', desc: 'Tugʻishdan oldingi 60 kunda sigirlar shu yerda turadi.' },
+    { n: 9, z: 'B', name: 'Buzoqxona', x: 200, y: 188, w: 60, d: 18, kind: 'barn', eave: 3.5, ridge: 6.5, axis: 'x', inner: 'pens', cows: 46, scale: 0.55, size: '60 × 18 m', area: '1 080 m²', cap: '60 individual + 100 guruhli joy', desc: 'Profilaktoriy va 2–6 oylik buzoqlar uchun guruhli kataklar; sharqida 60 ta individual buzoq domigi.' },
+    { n: 10, z: 'B', name: 'Gʻunajinlar molxonasi', x: 120, y: 222, w: 84, d: 24, kind: 'barn', eave: 4, ridge: 7.5, axis: 'x', inner: 'pens', cows: 70, scale: 0.85, size: '84 × 24 m', area: '2 016 m²', cap: '200 joy', desc: '6–24 oylik gʻunajinlar va boʻgʻoz tanalar.' },
+    { n: 11, z: 'B', name: 'Boʻrdoqi molxonasi', x: 214, y: 222, w: 96, d: 24, kind: 'barn', eave: 4, ridge: 7.5, axis: 'x', inner: 'pens', cows: 84, scale: 0.9, size: '96 × 24 m', area: '2 304 m²', cap: '240 joy', desc: '6–18 oylik buqachalar guruhli kataklarda boqiladi.' },
+    { n: 12, z: 'B', name: 'Sayr maydonchalari', x: 120, y: 256, w: 190, d: 24, kind: 'yard', size: '190 × 24 m', area: '~4 500 m²', cap: 'quruq sigir, gʻunajin, buqachalar', desc: 'Soyabonli ochiq maydonchalar, uch guruhga boʻlingan.' },
+    { n: 13, z: 'C', name: 'Silos-senaj transheyalari', x: 130, y: 10, w: 75, d: 55, kind: 'silo', trenches: 6, size: '6 × (55 × 12,5 m), devor 3 m', area: '4 125 m²', cap: '~12 000 m³', desc: '4 ta transheya makkajoʻxori silosi, 2 tasi beda senaji uchun. Ochiq tomoni yem yoʻliga qaragan.' },
+    { n: 14, z: 'C', name: 'Pichan ombori', x: 322, y: 6, w: 24, d: 64, kind: 'naves', eave: 6.5, ridge: 9, axis: 'z', fill: 'hay', size: '64 × 24 m', area: '1 536 m²', cap: '~1 100 t pichan', desc: 'Yon tomonlari ochiq naves, pol 30 sm koʻtarilgan.' },
+    { n: 15, z: 'C', name: 'Somon ombori', x: 360, y: 6, w: 24, d: 60, kind: 'naves', eave: 6, ridge: 8.5, axis: 'z', fill: 'straw', size: '60 × 24 m', area: '1 440 m²', cap: '~600 t somon', desc: 'Toʻshama uchun somon zaxirasi.' },
+    { n: 16, z: 'C', name: 'Don ombori va yem tayyorlash sexi', x: 225, y: 22, w: 42, d: 18, kind: 'gable', eave: 6, ridge: 8.5, axis: 'x', bunkers: true, size: '42 × 18 m', area: '756 m²', cap: '2 × 100 t bunker', desc: 'Don maydalagich, aralashtirgich, premiks dozatori va qopli yem ombori.' },
+    { n: 17, z: 'D', name: 'Veterinariya punkti', x: 76, y: 92, w: 24, d: 12, kind: 'gable', eave: 3.5, ridge: 5.5, axis: 'x', win: true, size: '24 × 12 m', area: '288 m²', cap: 'davolash va urugʻlantirish xonasi', desc: 'Davolash, sunʼiy urugʻlantirish, dori va urugʻ saqlash.' },
+    { n: 18, z: 'D', name: 'Karantin binosi', x: 46, y: 15, w: 36, d: 12, kind: 'gable', eave: 3.5, ridge: 5.5, axis: 'x', win: true, size: '36 × 12 m', area: '432 m²', cap: '40 joy', desc: 'Yangi keltirilgan mollar 30 kun shu yerda saqlanadi.' },
+    { n: 19, z: 'D', name: 'Izolyator', x: 14, y: 15, w: 18, d: 12, kind: 'gable', eave: 3.5, ridge: 5.5, axis: 'x', win: true, size: '18 × 12 m', area: '216 m²', cap: '15 joy', desc: 'Kasal mollarni ajratib davolash uchun.' },
+    { n: 20, z: 'D', name: 'Soʻyish, sovutish va muzlatish bloki', x: 14, y: 44, w: 36, d: 21, kind: 'cold', h: 6, size: '36 × 21 m', area: '756 m²', cap: 'sutkasiga 8 bosh, 25 t muzlatish', desc: 'Sovutish kamerasi 0…+4 °C, shok muzlatish −35 °C, muzlatgich −18…−22 °C. «Tomlarsiz» rejimida xonalar koʻrinadi.' },
+    { n: 21, z: 'E', name: 'Goʻng saqlash maydoni', x: 14, y: 186, w: 80, d: 36, kind: 'manure', size: '80 × 36 m', area: '2 880 m²', cap: '7 200 m³', desc: 'Beton maydon, uch tomoni devorli; 6 oylik zaxira.' },
+    { n: 22, z: 'E', name: 'Suyuq fraksiya hovuzi', x: 14, y: 236, w: 60, d: 34, kind: 'lagoon', size: '60 × 34 m', area: '2 040 m²', cap: '6 000 m³', desc: 'Geomembrana bilan qoplangan hovuz.' },
+    { n: 23, z: 'E', name: 'Biogaz qurilmasi', x: 14, y: 88, w: 44, d: 20, kind: 'digester', domes: 3, size: '44 × 20 m', area: '~880 m²', cap: '~800 m³ biogaz sutkasiga', desc: 'Ixtiyoriy: goʻngdan 60–80 kVt elektr va issiqlik olinadi.' },
+    { n: 24, z: 'E', name: 'Suv quduqlari va rezervuarlar', x: 372, y: 110, w: 34, d: 12, kind: 'water', size: '34 × 12 m', area: '400 m²', cap: '3 quduq, 2 × 200 m³', desc: '3 ta quduq (biri zaxira), rezervuarlar va nasos stansiyasi. Sutkalik ehtiyoj ~120 m³.' },
+    { n: 25, z: 'E', name: 'Transformator va dizel generator', x: 420, y: 112, w: 14, d: 7, kind: 'trafo', size: '14 × 7 m', area: '98 m²', cap: '630 kVA + 400 kVA', desc: 'Sogʻish va sovutish elektrsiz qolmasligi uchun avtomatik zaxira generator.' }
   ];
 
   var app = document.getElementById('app');
@@ -265,14 +270,14 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
   controls.dampingFactor = 0.08;
   controls.maxPolarAngle = Math.PI / 2.12;
   controls.minDistance = 20;
-  controls.maxDistance = 1200;
+  controls.maxDistance = 1500;
   controls.screenSpacePanning = true;
 
   function applyTheme() {
     var v = getComputedStyle(document.documentElement).getPropertyValue('--scene').trim() || '#E4E8E2';
     var c = new THREE.Color(v);
     scene.background = c;
-    scene.fog = new THREE.Fog(c, 650, 1700);
+    scene.fog = new THREE.Fog(c, 850, 2100);
   }
   applyTheme();
   if (window.matchMedia) {
@@ -284,11 +289,11 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
   scene.add(new THREE.HemisphereLight(0xF4F6F8, 0x8A8470, 0.5));
   scene.add(new THREE.AmbientLight(0xFFFFFF, 0.05));
   var sun = new THREE.DirectionalLight(0xFFF4E2, 0.72);
-  sun.position.set(150, 280, 150);
+  sun.position.set(190, 340, 190);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.mapSize.set(4096, 4096);
   var sc = sun.shadow.camera;
-  sc.left = -250; sc.right = 250; sc.top = 250; sc.bottom = -250; sc.near = 50; sc.far = 900;
+  sc.left = -330; sc.right = 330; sc.top = 330; sc.bottom = -330; sc.near = 50; sc.far = 1100;
   sun.shadow.bias = -0.0004;
   sun.shadow.normalBias = 0.4;
   scene.add(sun);
@@ -311,8 +316,8 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
   var roofMat = {};
   Object.keys(ZONES).forEach(function (k) { roofMat[k] = M(new THREE.Color(ZONES[k].c), { roughness: 0.62, metalness: 0.15, side: THREE.DoubleSide }); });
 
-  function toX(x) { return x - 160; }
-  function toZ(y) { return y - 125; }
+  function toX(x) { return x - SITE_W / 2; }
+  function toZ(y) { return y - SITE_D / 2; }
   function box(parent, x, y, w, d, h, m, y0, cast) {
     var mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
     mesh.position.set(toX(x + w / 2), (y0 || 0) + h / 2, toZ(y + d / 2));
@@ -369,7 +374,7 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
     box(g, b.x, b.y, t, b.d, h, mat.wall); box(g, b.x + b.w - t, b.y, t, b.d, h, mat.wall);
   }
 
-  var seed = 20261019;
+  var seed = 20261020;
   function rnd() {
     seed = (seed + 0x6D2B79F5) | 0;
     var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
@@ -393,8 +398,8 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
     }
   }
 
-  function interiorDairy(g) {
-    var X0 = 105, Y0 = 95, segs = [4, 26, 48], pairs = [3, 22.2], k = 0;
+  function interiorDairy(g, b) {
+    var X0 = b.x, Y0 = b.y, segs = [4, 26, 48], pairs = [3, 22.2], k = 0;
     box(g, X0, Y0 + 12.5, 66, 5, 0.12, mat.feed, 0, false);
     box(g, X0, Y0 + 12.25, 66, 0.1, 1.3, mat.rail);
     box(g, X0, Y0 + 17.65, 66, 0.1, 1.3, mat.rail);
@@ -440,37 +445,39 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
     }
   }
 
-  function interiorParlor(g) {
-    box(g, 203, 101.3, 0.2, 17.4, 2.6, mat.wall);
-    box(g, 221, 101.3, 0.2, 17.4, 3.5, mat.wall);
-    box(g, 221, 107, 12, 0.2, 3.5, mat.wall);
-    box(g, 204, 108.5, 16, 3, 0.05, mat.pit, 0, false);
-    var rg = new THREE.BoxGeometry(1.7, 1.0, 0.06), im = new THREE.InstancedMesh(rg, mat.rail, 24), k = 0;
+  function interiorParlor(g, b) {
+    var X0 = b.x, Y0 = b.y, D = b.d, mid = Y0 + D / 2, N = 20;
+    box(g, X0 + 14, Y0 + 0.3, 0.2, D - 0.6, 2.6, mat.wall);
+    box(g, X0 + 44, Y0 + 0.3, 0.2, D - 0.6, 3.5, mat.wall);
+    box(g, X0 + 44, Y0 + 7, 12, 0.2, 3.5, mat.wall);
+    box(g, X0 + 15, mid - 1.5, 28, 3, 0.05, mat.pit, 0, false);
+    var rg = new THREE.BoxGeometry(1.7, 1.0, 0.06), im = new THREE.InstancedMesh(rg, mat.rail, N * 2), k = 0;
     [-1, 1].forEach(function (side) {
-      for (var i = 0; i < 12; i++) {
+      for (var i = 0; i < N; i++) {
         var mm = new THREE.Matrix4().makeRotationY(side < 0 ? Math.PI / 4 : -Math.PI / 4);
-        mm.setPosition(toX(204.8 + i * 1.36), 0.5, toZ(side < 0 ? 106.6 : 113.4));
+        mm.setPosition(toX(X0 + 15.8 + i * 1.36), 0.5, toZ(mid + side * 3.4));
         im.setMatrixAt(k++, mm);
-        if (rnd() < 0.75) addCow(204.2 + i * 1.36, side < 0 ? 105.6 : 114.4, side < 0 ? Math.PI / 4 : -Math.PI / 4, 1);
+        if (rnd() < 0.75) addCow(X0 + 15.2 + i * 1.36, mid + side * 4.4, side < 0 ? Math.PI / 4 : -Math.PI / 4, 1);
       }
     });
     im.castShadow = true; g.add(im);
-    cyl(g, 224.5, 115.5, 1.5, 2.6, mat.metal);
-    cyl(g, 229.5, 115.5, 1.5, 2.6, mat.metal);
-    for (var i = 0; i < 14; i++) addCow(192.5 + rnd() * 9, 102.5 + rnd() * 15, rnd() < 0.7 ? 0 : rnd() * 6.28, 1);
+    cyl(g, X0 + 48, Y0 + D - 4.5, 1.9, 3, mat.metal);
+    cyl(g, X0 + 53, Y0 + D - 4.5, 1.9, 3, mat.metal);
+    for (var i = 0; i < 22; i++) addCow(X0 + 1.5 + rnd() * 11, Y0 + 1.5 + rnd() * (D - 3), rnd() < 0.7 ? 0 : rnd() * 6.28, 1);
   }
 
-  function interiorCold(g) {
-    var X0 = 14, Y0 = 50;
-    box(g, X0 + 4, Y0 + 11, 6, 7, 0.06, mat.chill, 0, false);
-    box(g, X0 + 10, Y0, 7, 11, 0.06, mat.chill, 0, false);
-    box(g, X0 + 17, Y0, 7, 11, 0.06, mat.chill, 0, false);
-    box(g, X0 + 24, Y0, 6, 5, 0.06, mat.frozen, 0, false);
-    box(g, X0 + 24, Y0 + 5, 6, 9, 0.06, mat.frozen, 0, false);
-    [[4, 11, 4, 18], [10, 0, 10, 18], [17, 0, 17, 18], [20.5, 11, 20.5, 18], [24, 0, 24, 18]].forEach(function (w) { box(g, X0 + w[0] - 0.1, Y0 + w[1], 0.2, w[3] - w[1], 5.4, mat.wall); });
-    [[0, 11, 24, 11], [24, 5, 30, 5], [24, 14, 30, 14]].forEach(function (w) { box(g, X0 + w[0], Y0 + w[1] - 0.1, w[2] - w[0], 0.2, 5.4, mat.wall); });
-    for (var r = 0; r < 2; r++) for (var i = 0; i < 6; i++) box(g, X0 + 11 + i * 1.0, Y0 + 3 + r * 4, 0.5, 0.4, 2.0, mat.carcass, 2.2);
-    for (var j = 0; j < 4; j++) box(g, X0 + 24.6, Y0 + 5.6 + j * 2, 4.8, 1.2, 3.2, mat.hutch);
+  function interiorCold(g, b) {
+    var X0 = b.x, Y0 = b.y, sx = b.w / 30, sy = b.d / 18;
+    function R(x, y, w, d, h, m, y0, cast) { return box(g, X0 + x * sx, Y0 + y * sy, w * sx, d * sy, h, m, y0, cast); }
+    R(4, 11, 6, 7, 0.06, mat.chill, 0, false);
+    R(10, 0, 7, 11, 0.06, mat.chill, 0, false);
+    R(17, 0, 7, 11, 0.06, mat.chill, 0, false);
+    R(24, 0, 6, 5, 0.06, mat.frozen, 0, false);
+    R(24, 5, 6, 9, 0.06, mat.frozen, 0, false);
+    [[4, 11, 4, 18], [10, 0, 10, 18], [17, 0, 17, 18], [20.5, 11, 20.5, 18], [24, 0, 24, 18]].forEach(function (w) { box(g, X0 + w[0] * sx - 0.1, Y0 + w[1] * sy, 0.2, (w[3] - w[1]) * sy, 5.4, mat.wall); });
+    [[0, 11, 24, 11], [24, 5, 30, 5], [24, 14, 30, 14]].forEach(function (w) { box(g, X0 + w[0] * sx, Y0 + w[1] * sy - 0.1, (w[2] - w[0]) * sx, 0.2, 5.4, mat.wall); });
+    for (var r = 0; r < 2; r++) for (var i = 0; i < 7; i++) box(g, X0 + 10.6 * sx + i * 1.0, Y0 + (3 + r * 4) * sy, 0.5, 0.4, 2.0, mat.carcass, 2.2);
+    for (var j = 0; j < 4; j++) box(g, X0 + 24.6 * sx, Y0 + (5.6 + j * 2) * sy, 4.8 * sx, 1.2, 3.2, mat.hutch);
   }
 
   var roofs = [], pickables = [];
@@ -483,43 +490,43 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
         if (b.windows) {
           [1.3, 4.6].forEach(function (h) { box(g, b.x + 2, b.y + b.d, b.w - 4, 0.12, 1.1, mat.dark, h, false); box(g, b.x + b.w, b.y + 2, 0.12, b.d - 4, 1.1, mat.dark, h, false); });
         }
-        if (b.n === 1) box(g, 305, 130.25, 9, 3.5, 0.06, mat.disinf, 0, false);
+        if (b.disinf) box(g, b.disinf[0], b.disinf[1], b.disinf[2], 3.5, 0.06, mat.disinf, 0, false);
         top = b.h + 0.4; break;
       case 'slab':
         box(g, b.x, b.y, b.w, b.d, b.h, mat.scale, 0, false); top = 1; break;
       case 'gable':
         box(g, b.x, b.y, b.w, b.d, b.eave, mat.wall);
         roof.add(roofMesh(b, rm)); roof.add(gableMesh(b, mat.wallDS));
-        if (b.doors) for (var i = 0; i < 4; i++) box(g, b.x + 3 + i * 10, b.y + b.d, 6, 0.12, 4.5, mat.dark, 0, false);
-        if (b.n >= 16 && b.n <= 18) box(g, b.x + 2, b.y + b.d, b.w - 4, 0.12, 0.8, mat.dark, 1.6, false);
-        if (b.bunkers) [226, 238].forEach(function (cx) {
-          cyl(g, cx, 39, 3.2, 10, mat.metal);
-          var cone = new THREE.Mesh(new THREE.ConeGeometry(3.2, 2.2, 28), mat.metal);
-          cone.position.set(toX(cx), 11.1, toZ(39)); cone.castShadow = true; g.add(cone);
+        if (b.doors) for (var i = 0; i < Math.floor((b.w - 2) / 10); i++) box(g, b.x + 3 + i * 10, b.y + b.d, 6, 0.12, 4.5, mat.dark, 0, false);
+        if (b.win) box(g, b.x + 2, b.y + b.d, b.w - 4, 0.12, 0.8, mat.dark, 1.6, false);
+        if (b.bunkers) [b.x + b.w + 6, b.x + b.w + 15].forEach(function (cx) {
+          var cy = b.y + b.d / 2;
+          cyl(g, cx, cy, 3.6, 11, mat.metal);
+          var cone = new THREE.Mesh(new THREE.ConeGeometry(3.6, 2.4, 28), mat.metal);
+          cone.position.set(toX(cx), 12.2, toZ(cy)); cone.castShadow = true; g.add(cone);
         });
-        top = b.bunkers ? 12.5 : b.ridge; break;
+        top = b.bunkers ? 13.5 : b.ridge; break;
       case 'barn':
         barnShell(g, b);
         roof.add(roofMesh(b, rm, b.vent ? 0.5 : 0)); roof.add(gableMesh(b, mat.wallDS));
         if (b.vent) box(roof, b.x - 0.6, b.y + b.d / 2 - 0.9, b.w + 1.2, 1.8, 0.15, rm, b.ridge + 0.45);
-        if (b.n === 5) interiorDairy(g);
-        else if (b.n === 7) interiorPens(g, b, 26, 1);
-        else if (b.n === 8) interiorPens(g, b, 34, 0.55);
-        else if (b.n === 9) interiorPens(g, b, 40, 0.85);
-        else if (b.n === 10) interiorPens(g, b, 46, 0.9);
+        if (b.inner === 'dairy') interiorDairy(g, b);
+        else if (b.inner === 'pens') interiorPens(g, b, b.cows, b.scale);
         top = b.ridge; break;
       case 'parlor':
         shell(g, b, b.eave);
         roof.add(roofMesh(b, rm)); roof.add(gableMesh(b, mat.wallDS));
-        box(g, 183, 107, 8, 6, 3.5, mat.wall);
-        box(roof, 183, 106.7, 8, 6.6, 0.25, rm, 3.5);
-        interiorParlor(g);
+        (b.galleries || []).forEach(function (q) {
+          box(g, q[0], q[1], q[2], q[3], 3.5, mat.wall);
+          box(roof, q[0], q[1] - 0.3, q[2], q[3] + 0.6, 0.25, rm, 3.5);
+        });
+        interiorParlor(g, b);
         top = b.ridge; break;
       case 'cold':
         shell(g, b, b.h);
         box(roof, b.x - 0.2, b.y - 0.2, b.w + 0.4, b.d + 0.4, 0.4, rm, b.h);
         [0, 1, 2].forEach(function (i) { box(roof, b.x + 4 + i * 8, b.y + 3, 3, 1.6, 1.2, mat.metal, b.h + 0.4); });
-        interiorCold(g);
+        interiorCold(g, b);
         top = b.h + 1.6; break;
       case 'naves':
         for (var yy = b.y; yy <= b.y + b.d + 0.01; yy += 6) {
@@ -531,27 +538,27 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
         top = b.ridge; break;
       case 'silo':
         box(g, b.x, b.y, b.w, b.d, 0.2, mat.concrete, 0, false);
-        [105, 117.5, 130, 142.5, 154.6].forEach(function (wx) { box(g, wx, b.y, 0.4, b.d, 3, mat.concrete); });
+        var tw = b.w / b.trenches, tl = [46, 38, 24, 50, 30, 20];
+        for (var ti = 0; ti <= b.trenches; ti++) box(g, Math.min(b.x + ti * tw, b.x + b.w - 0.4), b.y, 0.4, b.d, 3, mat.concrete);
         box(g, b.x, b.y, b.w, 0.4, 3, mat.concrete);
-        box(g, 105.4, 18, 12, 42, 3.3, mat.tarp, 0.2); box(g, 117.9, 25, 12.1, 35, 3.3, mat.tarp, 0.2);
-        box(g, 130.4, 40, 12.1, 20, 3.3, mat.tarp, 0.2); box(g, 142.9, 15.4, 11.7, 26, 3.1, mat.tarpW, 0.2);
+        for (ti = 0; ti < b.trenches; ti++) box(g, b.x + ti * tw + 0.4, b.y + 0.4, tw - 0.4, tl[ti % tl.length], 3.3, ti >= b.trenches - 2 ? mat.tarpW : mat.tarp, 0.2);
         top = 4; break;
       case 'yard':
         box(g, b.x, b.y, b.w, b.d, 0.08, mat.dirt, 0, false);
         box(g, b.x, b.y, b.w, 0.12, 1.3, mat.rail); box(g, b.x, b.y + b.d - 0.12, b.w, 0.12, 1.3, mat.rail);
-        [b.x, 152, 200, b.x + b.w - 0.12].forEach(function (xx) { box(g, xx, b.y, 0.12, b.d, 1.3, mat.rail); });
-        [125, 176, 222].forEach(function (cx) {
+        [b.x, b.x + b.w / 3, b.x + 2 * b.w / 3, b.x + b.w - 0.12].forEach(function (xx) { box(g, xx, b.y, 0.12, b.d, 1.3, mat.rail); });
+        [b.x + b.w / 6, b.x + b.w / 2, b.x + 5 * b.w / 6].forEach(function (cx) {
           box(g, cx - 7, b.y + 6, 14, 10, 0.1, mat.shade, 4.2);
           [[cx - 7, b.y + 6], [cx + 6.8, b.y + 6], [cx - 7, b.y + 15.8], [cx + 6.8, b.y + 15.8]].forEach(function (p) { box(g, p[0], p[1], 0.2, 0.2, 4.2, mat.rail); });
         });
-        for (var c = 0; c < 26; c++) addCow(b.x + 3 + rnd() * (b.w - 6), b.y + 2 + rnd() * (b.d - 4), rnd() * 6.28, 0.95);
+        for (var c = 0; c < 44; c++) addCow(b.x + 3 + rnd() * (b.w - 6), b.y + 2 + rnd() * (b.d - 4), rnd() * 6.28, 0.95);
         top = 5; break;
       case 'manure':
         box(g, b.x, b.y, b.w, b.d, 0.2, mat.concrete, 0, false);
         box(g, b.x, b.y, b.w, 0.3, 2, mat.concrete); box(g, b.x, b.y + b.d - 0.3, b.w, 0.3, 2, mat.concrete); box(g, b.x, b.y, 0.3, b.d, 2, mat.concrete);
-        [[30, 163, 10, 8], [49, 160, 8, 7], [60, 170, 7, 6]].forEach(function (p) {
+        [[18, 14, 11, 9], [42, 12, 10, 8], [62, 22, 9, 7]].forEach(function (p) {
           var s = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 12), mat.manure);
-          s.scale.set(p[2], 2.2, p[3]); s.position.set(toX(p[0]), 0.2, toZ(p[1])); s.castShadow = true; s.receiveShadow = true; g.add(s);
+          s.scale.set(p[2], 2.2, p[3]); s.position.set(toX(b.x + p[0]), 0.2, toZ(b.y + p[1])); s.castShadow = true; s.receiveShadow = true; g.add(s);
         });
         top = 3.5; break;
       case 'lagoon':
@@ -559,15 +566,15 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
         box(g, b.x + 2, b.y + 2, b.w - 4, b.d - 4, 0.05, mat.lagoon, 1.2, false);
         top = 2; break;
       case 'digester':
-        [22, 36].forEach(function (cx) {
-          cyl(g, cx, 102, 6, 5, mat.concrete);
+        for (var di = 0; di < (b.domes || 2); di++) (function (cx, cy) {
+          cyl(g, cx, cy, 6, 5, mat.concrete);
           var dme = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2), mat.dome);
-          dme.scale.set(1, 0.55, 1); dme.position.set(toX(cx), 5, toZ(102)); dme.castShadow = true; g.add(dme);
-        });
+          dme.scale.set(1, 0.55, 1); dme.position.set(toX(cx), 5, toZ(cy)); dme.castShadow = true; g.add(dme);
+        })(b.x + 8 + di * 14, b.y + b.d / 2);
         top = 9; break;
       case 'water':
-        cyl(g, 271, 88, 3.6, 2.6, mat.tank); cyl(g, 280, 88, 3.6, 2.6, mat.tank);
-        box(g, 288, 84, 10, 8, 3, mat.wall); box(roof, 287.8, 83.8, 10.4, 8.4, 0.3, rm, 3);
+        cyl(g, b.x + 5, b.y + 6, 4.2, 3.6, mat.tank); cyl(g, b.x + 14.5, b.y + 6, 4.2, 3.6, mat.tank);
+        box(g, b.x + 22, b.y + 2, 10, 8, 3, mat.wall); box(roof, b.x + 21.8, b.y + 1.8, 10.4, 8.4, 0.3, rm, 3);
         top = 4; break;
       case 'trafo':
         box(g, b.x, b.y, b.w, b.d, 0.25, mat.concrete, 0, false);
@@ -586,16 +593,16 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
   // ground, site pad, roads
   var ground = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400), mat.grass);
   ground.rotation.x = -Math.PI / 2; ground.position.y = -0.05; ground.receiveShadow = true; scene.add(ground);
-  box(scene, 0, 0, 320, 250, 0.03, mat.pad, -0.02, false);
-  [[160, 128, 160, 8], [105, 74, 157, 8], [254, 74, 8, 62], [0, 128, 100, 8], [92, 20, 8, 190], [74, 160, 18, 8], [320, 128, 260, 8], [-240, 128, 240, 8]]
+  box(scene, 0, 0, SITE_W, SITE_D, 0.03, mat.pad, -0.02, false);
+  [[0, 170, 440, 8], [440, 170, 260, 8], [-240, 170, 240, 8], [112, 74, 196, 8], [308, 74, 80, 8], [300, 82, 8, 88], [104, 20, 8, 270], [94, 196, 10, 8], [112, 212, 200, 7], [50, 54, 54, 6]]
     .forEach(function (r) { box(scene, r[0], r[1], r[2], r[3], 0.06, mat.road, 0, false); });
 
   B.forEach(build);
 
   // calf hutches
   (function () {
-    var im = new THREE.InstancedMesh(new THREE.BoxGeometry(1.3, 1.25, 2.2), mat.hutch, 40), m4 = new THREE.Matrix4(), k = 0;
-    [167.5, 171.8].forEach(function (yy) { for (var i = 0; i < 20; i++) { m4.makeTranslation(toX(177 + i * 2.3), 0.62, toZ(yy)); im.setMatrixAt(k++, m4); } });
+    var im = new THREE.InstancedMesh(new THREE.BoxGeometry(1.3, 1.25, 2.2), mat.hutch, 60), m4 = new THREE.Matrix4(), k = 0;
+    [191, 196].forEach(function (yy) { for (var i = 0; i < 30; i++) { m4.makeTranslation(toX(268 + i * 2.3), 0.62, toZ(yy)); im.setMatrixAt(k++, m4); } });
     im.castShadow = true; im.receiveShadow = true; scene.add(im);
   })();
 
@@ -611,7 +618,7 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
       }
       if (gate) { segs.push([x1, y1, x2, gate[0]]); segs.push([x1, gate[1], x2, y2]); } else segs.push([x1, y1, x2, y2]);
     }
-    side(0, 0, 320, 0); side(0, 250, 320, 250); side(0, 0, 0, 250, [127, 137]); side(320, 0, 320, 250, [127, 137]);
+    side(0, 0, SITE_W, 0); side(0, SITE_D, SITE_W, SITE_D); side(0, 0, 0, SITE_D, [GATE_Y - 7, GATE_Y + 7]); side(SITE_W, 0, SITE_W, SITE_D, [GATE_Y - 7, GATE_Y + 7]);
     var im = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.06, 0.06, 2, 6), mat.fence, posts.length), m4 = new THREE.Matrix4();
     posts.forEach(function (p, i) { m4.makeTranslation(toX(p[0]), 1, toZ(p[1])); im.setMatrixAt(i, m4); });
     scene.add(im);
@@ -628,9 +635,9 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
   (function () {
     var pts = [];
     [8, 14].forEach(function (off, row) {
-      var x0 = -off, x1 = 320 + off, y0 = -off, y1 = 250 + off, step = 7, sh = row * 3.5;
+      var x0 = -off, x1 = SITE_W + off, y0 = -off, y1 = SITE_D + off, step = 7, sh = row * 3.5;
       for (var x = x0 + sh; x <= x1; x += step) { pts.push([x, y0]); pts.push([x, y1]); }
-      for (var y = y0 + step + sh; y < y1; y += step) { if (Math.abs(y - 132) > 16) { pts.push([x0, y]); pts.push([x1, y]); } }
+      for (var y = y0 + step + sh; y < y1; y += step) { if (Math.abs(y - GATE_Y) > 16) { pts.push([x0, y]); pts.push([x1, y]); } }
     });
     var trunk = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.22, 0.3, 3, 6), mat.trunk, pts.length);
     var crown = new THREE.InstancedMesh(new THREE.ConeGeometry(1.7, 9, 8), mat.crown, pts.length);
@@ -730,9 +737,9 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
     };
   }
   function homeView() {
-    var k = camera.aspect < 1 ? 1.8 : 1.12;
-    var t = app.clientWidth > 900 ? new THREE.Vector3(-16, 0, 18) : new THREE.Vector3(8, 0, 6);
-    return { pos: t.clone().add(new THREE.Vector3(207 * k, 195 * k, 259 * k)), target: t };
+    var k = camera.aspect < 1 ? 1.75 : 0.98;
+    var t = app.clientWidth > 900 ? new THREE.Vector3(-22, 0, 24) : new THREE.Vector3(10, 0, 8);
+    return { pos: t.clone().add(new THREE.Vector3(280 * k, 263 * k, 350 * k)), target: t };
   }
   function focus(b) {
     var c = new THREE.Vector3(toX(b.x + b.w / 2), 3, toZ(b.y + b.d / 2));
@@ -744,7 +751,7 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); o
   }
   document.getElementById('bHome').addEventListener('click', function () { var h = homeView(); flyTo(h.pos, h.target); });
   document.getElementById('bTop').addEventListener('click', function () {
-    flyTo(new THREE.Vector3(0, camera.aspect < 1 ? 720 : 470, 0.01), new THREE.Vector3(0, 0, 0));
+    flyTo(new THREE.Vector3(0, camera.aspect < 1 ? 960 : 620, 0.01), new THREE.Vector3(0, 0, 0));
   });
   var bRoof = document.getElementById('bRoof'), bNames = document.getElementById('bNames');
   bRoof.addEventListener('click', function () {
