@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Qoramolchilik fermasi, 500 bosh — 3D model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --scene: #E4E8E2; --bg: #E4E8E2; --panel: rgba(255,255,255,0.9); --solid: #FFFFFF;
+  --ink: #1D2A33; --muted: #5A6670; --line: #C7CDD1; --hover: rgba(29,42,51,0.07);
+  --press: #1D2A33; --press-ink: #FFFFFF; --focus: #2C6DB0;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --scene: #1B2026; --bg: #1B2026; --panel: rgba(30,36,43,0.9); --solid: #232A31;
+    --ink: #E6EBEE; --muted: #9DA8B0; --line: #3B454E; --hover: rgba(230,235,238,0.08);
+    --press: #E6EBEE; --press-ink: #1B2026; --focus: #86B6EC;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --scene: #1B2026; --bg: #1B2026; --panel: rgba(30,36,43,0.9); --solid: #232A31;
+  --ink: #E6EBEE; --muted: #9DA8B0; --line: #3B454E; --hover: rgba(230,235,238,0.08);
+  --press: #E6EBEE; --press-ink: #1B2026; --focus: #86B6EC;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  height: 100%; margin: 0; background: var(--bg); color: var(--ink);
+  font-family: 'Barlow', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px; line-height: 1.4; overflow: hidden; -webkit-font-smoothing: antialiased;
+}
+#app { position: relative; width: 100%; height: 100%; overflow: hidden; }
+#app canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+#labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.lbl {
+  position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 4px;
+  pointer-events: auto; border: 0; background: none; padding: 0; cursor: pointer;
+  font: 600 13px/1 'Barlow Condensed', 'Barlow', system-ui, sans-serif; color: var(--ink);
+  will-change: transform;
+}
+.lbl .num {
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px;
+  border-radius: 11px; background: var(--solid); border: 2px solid var(--zc);
+}
+.lbl .name { display: none; background: var(--solid); padding: 3px 7px; border-radius: 3px; border: 1px solid var(--line); }
+#labels.names .lbl .name, .lbl.sel .name { display: inline-block; }
+.lbl.sel .num { background: var(--zc); color: #FFFFFF; }
+.lbl[hidden] { display: none; }
+
+.stamp {
+  position: absolute; left: 16px; top: 16px; width: min(330px, calc(100% - 32px));
+  max-height: calc(100% - 110px); overflow: auto;
+  background: var(--panel); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+}
+.stamp header { padding: 12px 14px 10px; border-bottom: 1px solid var(--line); }
+.stamp h1 { margin: 0; font: 600 23px/1.05 'Barlow Condensed', 'Barlow', system-ui, sans-serif; }
+.stamp header p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.stamp details > summary {
+  list-style: none; cursor: pointer; padding: 9px 14px; font-weight: 600;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.stamp details > summary::-webkit-details-marker { display: none; }
+.stamp details > summary::after { content: '+'; font-weight: 500; color: var(--muted); }
+.stamp details[open] > summary::after { content: '\2212'; }
+.stamp details + details { border-top: 1px solid var(--line); }
+.meta { display: grid; grid-template-columns: auto 1fr; margin: 0; padding: 0 14px 12px; gap: 4px 14px; font-size: 14px; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.zones { list-style: none; margin: 0; padding: 0 14px 12px; display: grid; gap: 5px; font-size: 14px; }
+.zones li { display: flex; align-items: center; gap: 8px; }
+.zones i { width: 14px; height: 10px; border-radius: 2px; background: var(--zc); flex: none; }
+.help { margin: 0; padding: 0 14px 12px; color: var(--muted); font-size: 13px; }
+.blist { list-style: none; margin: 0; padding: 0 6px 8px; }
+.blist button {
+  width: 100%; display: flex; gap: 10px; align-items: baseline; text-align: left;
+  background: none; border: 0; padding: 6px 8px; color: var(--ink); font: inherit; font-size: 14px;
+  cursor: pointer; border-radius: 3px;
+}
+.blist button:hover { background: var(--hover); }
+.blist b { min-width: 22px; font: 600 14px 'Barlow Condensed', 'Barlow', sans-serif; color: var(--zc); }
+
+.compass {
+  position: absolute; right: 16px; top: 16px; width: 52px; height: 52px; border-radius: 50%;
+  background: var(--panel); border: 1px solid var(--line); display: grid; place-items: center; color: var(--ink);
+}
+.compass svg { width: 42px; height: 42px; }
+
+.toolbar {
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; padding: 5px;
+  background: var(--panel); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid var(--line); max-width: calc(100% - 32px);
+}
+.toolbar button, .info button {
+  font: 500 15px/1 'Barlow', system-ui, sans-serif; color: var(--ink); background: transparent;
+  border: 1px solid transparent; padding: 10px 13px; border-radius: 3px; cursor: pointer; white-space: nowrap;
+}
+.toolbar button:hover, .info button:hover { background: var(--hover); }
+.toolbar button[aria-pressed="true"] { background: var(--press); color: var(--press-ink); }
+button:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.info {
+  position: absolute; right: 16px; bottom: 80px; width: min(330px, calc(100% - 32px));
+  background: var(--solid); border: 1px solid var(--line); border-top: 4px solid var(--zc, var(--line));
+  padding: 14px 16px 10px;
+}
+.info[hidden] { display: none; }
+.info .kicker { margin: 0; color: var(--muted); font-size: 13px; }
+.info h2 { margin: 2px 0 10px; font: 600 21px/1.1 'Barlow Condensed', 'Barlow', sans-serif; }
+.info dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0 0 10px; font-size: 14px; }
+.info dt { color: var(--muted); }
+.info dd { margin: 0; }
+.info p.desc { margin: 0 0 8px; font-size: 14px; }
+.info .actions { display: flex; gap: 4px; margin: 0 -8px; }
+
+.loading {
+  position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted);
+  font-size: 16px; background: var(--bg); padding: 24px; text-align: center;
+}
+.loading[hidden] { display: none; }
+
+@media (max-width: 640px) {
+  .stamp { left: 10px; top: 10px; width: calc(100% - 84px); max-height: 45%; }
+  .stamp h1 { font-size: 20px; }
+  .compass { right: 10px; top: 10px; width: 46px; height: 46px; }
+  .compass svg { width: 36px; height: 36px; }
+  .toolbar { bottom: 10px; width: calc(100% - 20px); }
+  .toolbar button { flex: 1 1 calc(50% - 4px); padding: 10px 6px; font-size: 14px; }
+  .info { left: 10px; right: 10px; width: auto; bottom: 118px; padding: 12px 14px 8px; }
+  .info p.desc { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="labels"></div>
+
+  <aside class="stamp" aria-label="Loyiha maʼlumotlari">
+    <header>
+      <h1>Qoramolchilik fermasi, 500 bosh</h1>
+      <p>Aralash yoʻnalish: sut va goʻsht. Sudrab aylantiring, binoni bossangiz maʼlumoti chiqadi.</p>
+    </header>
+    <details id="dInfo">
+      <summary>Umumiy maʼlumot</summary>
+      <dl class="meta">
+        <dt>Hudud</dt><dd>320 × 250 m, 8 ga</dd>
+        <dt>Binolar</dt><dd>24 ta</dd>
+        <dt>Asosiy poda</dt><dd>200 bosh sigir</dd>
+        <dt>Shamol</dt><dd>sharqdan (hisobiy)</dd>
+      </dl>
+      <ul class="zones" id="zones"></ul>
+      <p class="help">Aylantirish uchun sudrang, yaqinlashtirish uchun gʻildirak yoki ikki barmoqdan foydalaning. Binoni bossangiz, uning maʼlumoti chiqadi.</p>
+    </details>
+    <details id="dList">
+      <summary>Binolar roʻyxati</summary>
+      <ol class="blist" id="blist"></ol>
+    </details>
+  </aside>
+
+  <div class="compass" title="Qizil uch shimolni koʻrsatadi">
+    <svg viewBox="0 0 40 40" role="img" aria-label="Kompas">
+      <g id="needle">
+        <text x="20" y="9" text-anchor="middle" font-size="8" font-weight="600" fill="currentColor" font-family="Barlow Condensed, sans-serif">Sh</text>
+        <path d="M20 11 L23.5 21 L16.5 21 Z" fill="#C9473A"/>
+        <path d="M20 33 L23.5 21 L16.5 21 Z" fill="currentColor" opacity="0.45"/>
+      </g>
+    </svg>
+  </div>
+
+  <section class="info" id="info" hidden aria-live="polite">
+    <p class="kicker" id="iZone"></p>
+    <h2 id="iName"></h2>
+    <dl>
+      <dt>Oʻlchami</dt><dd id="iSize"></dd>
+      <dt>Maydoni</dt><dd id="iArea"></dd>
+      <dt>Sigʻimi</dt><dd id="iCap"></dd>
+    </dl>
+    <p class="desc" id="iDesc"></p>
+    <div class="actions">
+      <button type="button" id="iZoom">Yaqinlashtirish</button>
+      <button type="button" id="iClose">Yopish</button>
+    </div>
+  </section>
+
+  <nav class="toolbar" aria-label="Koʻrinish">
+    <button type="button" id="bHome">Umumiy koʻrinish</button>
+    <button type="button" id="bTop">Yuqoridan</button>
+    <button type="button" id="bRoof" aria-pressed="false">Tomlarsiz</button>
+    <button type="button" id="bNames" aria-pressed="false">Nomlar</button>
+  </nav>
+
+  <div class="loading" id="loading">3D model yuklanmoqda…</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function () {
+  var loadingEl = document.getElementById('loading');
+  function fail(msg) { loadingEl.textContent = msg; loadingEl.hidden = false; }
+  if (!window.THREE || !THREE.OrbitControls) { fail('3D kutubxonasi yuklanmadi. Internet aloqasini tekshirib, sahifani yangilang.'); return; }
+
+  var ZONES = {
+    A: { name: 'Maʼmuriy-xoʻjalik', c: '#5B84B1' },
+    B: { name: 'Chorvachilik', c: '#D08A54' },
+    C: { name: 'Yem-xashak', c: '#4FA37A' },
+    D: { name: 'Veterinariya va soʻyish', c: '#4A5D80' },
+    E: { name: 'Goʻng va muhandislik', c: '#C46A8A' }
+  };
+
+  var B = [
+    { n: 1, z: 'A', name: 'Nazorat-oʻtkazish punkti va dezbarrier', x: 304, y: 118, w: 12, d: 6, kind: 'flat', h: 3.5, size: '12 × 6 m', area: '72 m²', cap: '9 × 3,5 m avtomobil dezbarrieri', desc: 'Barcha transport dezbarrierdan oʻtadi, xodimlar sanitariya oʻtkazgich orqali kiradi.' },
+    { n: 2, z: 'A', name: 'Maʼmuriy-maishiy bino', x: 280, y: 100, w: 30, d: 12, kind: 'flat', h: 7, windows: true, size: '30 × 12 m', area: '360 m²', cap: '34 xodim', desc: 'Ofis, xodimlar xonasi, oshxona, dush va kiyim almashtirish xonasi.' },
+    { n: 3, z: 'A', name: 'Avtotarozi', x: 276, y: 130.5, w: 18, d: 3, kind: 'slab', h: 0.35, size: '18 × 3 m', area: '54 m²', cap: '60 t', desc: 'Sut, yem va mollarni kirish-chiqishda tortish uchun.' },
+    { n: 4, z: 'A', name: 'Texnika parki va ustaxona', x: 272, y: 150, w: 42, d: 18, kind: 'gable', eave: 6, ridge: 8.5, axis: 'x', doors: true, size: '42 × 18 m', area: '756 m²', cap: '10 ta texnika', desc: 'Traktorlar, mikser-tarqatgichlar, yuklagichlar va taʼmirlash ustaxonasi.' },
+    { n: 5, z: 'B', name: 'Sut molxonasi', x: 105, y: 95, w: 78, d: 30, kind: 'barn', eave: 4.5, ridge: 9.5, axis: 'x', vent: true, size: '78 × 30 m', area: '2 340 m²', cap: '180 boks', desc: '4 qator boks, markazda 5 m yem stoli, koʻtariladigan yon pardalar, ventilyatorlar va tizmadagi havo tirqishi.' },
+    { n: 6, z: 'B', name: 'Sogʻish bloki', x: 191, y: 101, w: 42, d: 18, kind: 'parlor', eave: 5, ridge: 7.5, axis: 'x', size: '42 × 18 m', area: '756 m²', cap: '2×12 sogʻish joyi, 2 × 4 000 l tank', desc: 'Kutish maydoni, «Archa» tipidagi 2×12 sogʻish zali, sut xonasi va texnik xona. Molxonaga galereya orqali ulangan.' },
+    { n: 7, z: 'B', name: 'Tugʻruqxona va quruq sigirlar bloki', x: 105, y: 145, w: 54, d: 21, kind: 'barn', eave: 4, ridge: 7.5, axis: 'x', size: '54 × 21 m', area: '1 134 m²', cap: '30 boks + 12 tugʻruq katagi', desc: 'Tugʻishdan oldingi 60 kunda sigirlar shu yerda turadi.' },
+    { n: 8, z: 'B', name: 'Buzoqxona', x: 175, y: 145, w: 48, d: 18, kind: 'barn', eave: 3.5, ridge: 6.5, axis: 'x', size: '48 × 18 m', area: '864 m²', cap: '40 individual + 60 guruhli joy', desc: 'Profilaktoriy va 2–6 oylik buzoqlar uchun guruhli kataklar; janubida individual buzoq domiklari.' },
+    { n: 9, z: 'B', name: 'Gʻunajinlar molxonasi', x: 105, y: 180, w: 60, d: 21, kind: 'barn', eave: 4, ridge: 7.5, axis: 'x', size: '60 × 21 m', area: '1 260 m²', cap: '80 joy', desc: '6–24 oylik gʻunajinlar va boʻgʻoz tanalar.' },
+    { n: 10, z: 'B', name: 'Boʻrdoqi molxonasi', x: 180, y: 180, w: 66, d: 21, kind: 'barn', eave: 4, ridge: 7.5, axis: 'x', size: '66 × 21 m', area: '1 386 m²', cap: '100 joy', desc: '6–18 oylik buqachalar guruhli kataklarda boqiladi.' },
+    { n: 11, z: 'B', name: 'Sayr maydonchalari', x: 105, y: 214, w: 141, d: 22, kind: 'yard', size: '141 × 22 m', area: '~3 000 m²', cap: 'quruq sigir, gʻunajin, buqachalar', desc: 'Soyabonli ochiq maydonchalar, uch guruhga boʻlingan.' },
+    { n: 12, z: 'C', name: 'Silos-senaj transheyalari', x: 105, y: 15, w: 50, d: 50, kind: 'silo', size: '4 × (50 × 12 m), devor 3 m', area: '2 400 m²', cap: '7 200 m³', desc: '3 ta transheya makkajoʻxori silosi, 1 tasi beda senaji uchun. Ochiq tomoni yem yoʻliga qaragan.' },
+    { n: 13, z: 'C', name: 'Pichan ombori', x: 268, y: 12, w: 18, d: 60, kind: 'naves', eave: 6.5, ridge: 8.5, axis: 'z', fill: 'hay', size: '60 × 18 m', area: '1 080 m²', cap: '~750 t pichan', desc: 'Yon tomonlari ochiq naves, pol 30 sm koʻtarilgan.' },
+    { n: 14, z: 'C', name: 'Somon ombori', x: 298, y: 12, w: 18, d: 48, kind: 'naves', eave: 6, ridge: 8, axis: 'z', fill: 'straw', size: '48 × 18 m', area: '864 m²', cap: '~350 t somon', desc: 'Toʻshama uchun somon zaxirasi.' },
+    { n: 15, z: 'C', name: 'Don ombori va yem tayyorlash sexi', x: 180, y: 30, w: 36, d: 18, kind: 'gable', eave: 6, ridge: 8.5, axis: 'x', bunkers: true, size: '36 × 18 m', area: '648 m²', cap: '2 × 60 t bunker', desc: 'Don maydalagich, aralashtirgich, premiks dozatori va qopli yem ombori.' },
+    { n: 16, z: 'D', name: 'Veterinariya punkti', x: 72, y: 95, w: 18, d: 12, kind: 'gable', eave: 3.5, ridge: 5.5, axis: 'x', size: '18 × 12 m', area: '216 m²', cap: 'davolash va urugʻlantirish xonasi', desc: 'Davolash, sunʼiy urugʻlantirish, dori va urugʻ saqlash.' },
+    { n: 17, z: 'D', name: 'Karantin binosi', x: 52, y: 15, w: 24, d: 12, kind: 'gable', eave: 3.5, ridge: 5.5, axis: 'x', size: '24 × 12 m', area: '288 m²', cap: '20 joy', desc: 'Yangi keltirilgan mollar 30 kun shu yerda saqlanadi.' },
+    { n: 18, z: 'D', name: 'Izolyator', x: 14, y: 15, w: 18, d: 12, kind: 'gable', eave: 3.5, ridge: 5.5, axis: 'x', size: '18 × 12 m', area: '216 m²', cap: '10 joy', desc: 'Kasal mollarni ajratib davolash uchun.' },
+    { n: 19, z: 'D', name: 'Soʻyish, sovutish va muzlatish bloki', x: 14, y: 50, w: 30, d: 18, kind: 'cold', h: 6, size: '30 × 18 m', area: '540 m²', cap: 'sutkasiga 5 bosh, 15 t muzlatish', desc: 'Sovutish kamerasi 0…+4 °C, shok muzlatish −35 °C, muzlatgich −18…−22 °C. «Tomlarsiz» rejimida xonalar koʻrinadi.' },
+    { n: 20, z: 'E', name: 'Goʻng saqlash maydoni', x: 14, y: 150, w: 60, d: 30, kind: 'manure', size: '60 × 30 m', area: '1 800 m²', cap: '3 600 m³', desc: 'Beton maydon, uch tomoni devorli; 6 oylik zaxira.' },
+    { n: 21, z: 'E', name: 'Suyuq fraksiya hovuzi', x: 14, y: 195, w: 40, d: 25, kind: 'lagoon', size: '40 × 25 m', area: '1 000 m²', cap: '3 000 m³', desc: 'Geomembrana bilan qoplangan hovuz.' },
+    { n: 22, z: 'E', name: 'Biogaz qurilmasi', x: 14, y: 92, w: 30, d: 20, kind: 'digester', size: '30 × 20 m', area: '~600 m²', cap: '~400 m³ biogaz sutkasiga', desc: 'Ixtiyoriy: goʻngdan 30–40 kVt elektr va issiqlik olinadi.' },
+    { n: 23, z: 'E', name: 'Suv quduqlari va rezervuarlar', x: 266, y: 82, w: 34, d: 12, kind: 'water', size: '34 × 12 m', area: '300 m²', cap: '2 × 100 m³', desc: '2 ta quduq (biri zaxira), rezervuarlar va nasos stansiyasi.' },
+    { n: 24, z: 'E', name: 'Transformator va dizel generator', x: 302, y: 66, w: 12, d: 6, kind: 'trafo', size: '12 × 6 m', area: '72 m²', cap: '400 kVA + 200 kVA', desc: 'Sogʻish va sovutish elektrsiz qolmasligi uchun avtomatik zaxira generator.' }
+  ];
+
+  var app = document.getElementById('app');
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+  } catch (e) {
+    fail('Brauzeringiz 3D grafikani (WebGL) qoʻllab-quvvatlamaydi. Boshqa brauzerda oching.');
+    return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  app.insertBefore(renderer.domElement, app.firstChild);
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(38, 1, 1, 4000);
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.maxPolarAngle = Math.PI / 2.12;
+  controls.minDistance = 20;
+  controls.maxDistance = 1200;
+  controls.screenSpacePanning = true;
+
+  function applyTheme() {
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--scene').trim() || '#E4E8E2';
+    var c = new THREE.Color(v);
+    scene.background = c;
+    scene.fog = new THREE.Fog(c, 650, 1700);
+  }
+  applyTheme();
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', applyTheme); else if (mq.addListener) mq.addListener(applyTheme);
+  }
+  new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  scene.add(new THREE.HemisphereLight(0xF4F6F8, 0x8A8470, 0.5));
+  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.05));
+  var sun = new THREE.DirectionalLight(0xFFF4E2, 0.72);
+  sun.position.set(150, 280, 150);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  var sc = sun.shadow.camera;
+  sc.left = -250; sc.right = 250; sc.top = 250; sc.bottom = -250; sc.near = 50; sc.far = 900;
+  sun.shadow.bias = -0.0004;
+  sun.shadow.normalBias = 0.4;
+  scene.add(sun);
+  scene.add(sun.target);
+
+  function M(c, o) { return new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.88, metalness: 0 }, o || {})); }
+  var mat = {
+    wall: M(0xF2F0EA), wallDS: M(0xF2F0EA, { side: THREE.DoubleSide }), plinth: M(0xD5D1C8),
+    curtain: M(0xDDE8EE, { transparent: true, opacity: 0.3, depthWrite: false, side: THREE.DoubleSide }),
+    road: M(0xA09B90), pad: M(0xCBC4AC), grass: M(0x93A673), dark: M(0x3C4752, { roughness: 0.5 }),
+    metal: M(0xC9CED3, { metalness: 0.55, roughness: 0.35 }), tank: M(0xA7B8C6, { metalness: 0.4, roughness: 0.45 }),
+    tarp: M(0x2F3A34, { roughness: 0.6 }), tarpW: M(0xE6E9E4, { roughness: 0.6 }), hay: M(0xD6B65C), straw: M(0xE4D392),
+    manure: M(0x6A5036), lagoon: M(0x5A5638, { roughness: 0.25 }), earth: M(0x9E8C6C), dome: M(0x8DA586, { roughness: 0.6 }),
+    concrete: M(0xCFCBC2), feed: M(0xC9C2B2), dirt: M(0xC7B595), cowBody: M(0xA45E36), cowHead: M(0xEFE8DC),
+    cowLeg: M(0x5B3B27), trunk: M(0x7A5B3E), crown: M(0x5F7F47), hutch: M(0xF7F7F3), chill: M(0xBCD5EB),
+    frozen: M(0x98AECB), pit: M(0x8F959B), rail: M(0x7E878F, { metalness: 0.4, roughness: 0.5 }), fence: M(0x6F7880, { metalness: 0.3 }),
+    fan: M(0x2E363D), scale: M(0x8D9298), genset: M(0x7C8A70), carcass: M(0xB55B4C), shade: M(0xE7E3D6, { side: THREE.DoubleSide }),
+    disinf: M(0x5F7A8A, { roughness: 0.3 })
+  };
+  var roofMat = {};
+  Object.keys(ZONES).forEach(function (k) { roofMat[k] = M(new THREE.Color(ZONES[k].c), { roughness: 0.62, metalness: 0.15, side: THREE.DoubleSide }); });
+
+  function toX(x) { return x - 160; }
+  function toZ(y) { return y - 125; }
+  function box(parent, x, y, w, d, h, m, y0, cast) {
+    var mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+    mesh.position.set(toX(x + w / 2), (y0 || 0) + h / 2, toZ(y + d / 2));
+    mesh.castShadow = cast !== false;
+    mesh.receiveShadow = true;
+    parent.add(mesh);
+    return mesh;
+  }
+  function cyl(parent, x, y, r, h, m, y0) {
+    var mesh = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 28), m);
+    mesh.position.set(toX(x), (y0 || 0) + h / 2, toZ(y));
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    parent.add(mesh);
+    return mesh;
+  }
+  function pushPt(arr, p, axis) { if (axis === 'x') arr.push(p[0], p[1], p[2]); else arr.push(p[2], p[1], p[0]); }
+  function roofMesh(b, m, gap) {
+    gap = gap || 0;
+    var o = 0.6, L = b.axis === 'x' ? b.w : b.d, S = b.axis === 'x' ? b.d : b.w, half = S / 2;
+    var slope = (b.ridge - b.eave) / half, hE = b.eave - slope * o, hR = b.ridge - slope * gap;
+    var a = -L / 2 - o, c = L / 2 + o;
+    var quads = [
+      [[a, hE, -half - o], [c, hE, -half - o], [c, hR, -gap], [a, hR, -gap]],
+      [[a, hR, gap], [c, hR, gap], [c, hE, half + o], [a, hE, half + o]]
+    ];
+    var pos = [];
+    quads.forEach(function (q) { [q[0], q[1], q[2], q[0], q[2], q[3]].forEach(function (p) { pushPt(pos, p, b.axis); }); });
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.computeVertexNormals();
+    var mesh = new THREE.Mesh(g, m);
+    mesh.position.set(toX(b.x + b.w / 2), 0, toZ(b.y + b.d / 2));
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    return mesh;
+  }
+  function gableMesh(b, m) {
+    var L = b.axis === 'x' ? b.w : b.d, S = b.axis === 'x' ? b.d : b.w, pos = [];
+    [-1, 1].forEach(function (s) {
+      var u = s * L / 2;
+      [[u, b.eave, -S / 2], [u, b.eave, S / 2], [u, b.ridge, 0]].forEach(function (p) { pushPt(pos, p, b.axis); });
+    });
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.computeVertexNormals();
+    var mesh = new THREE.Mesh(g, m);
+    mesh.position.set(toX(b.x + b.w / 2), 0, toZ(b.y + b.d / 2));
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    return mesh;
+  }
+  function shell(g, b, h) {
+    var t = 0.3;
+    box(g, b.x, b.y, b.w, t, h, mat.wall); box(g, b.x, b.y + b.d - t, b.w, t, h, mat.wall);
+    box(g, b.x, b.y, t, b.d, h, mat.wall); box(g, b.x + b.w - t, b.y, t, b.d, h, mat.wall);
+  }
+
+  var seed = 20261019;
+  function rnd() {
+    seed = (seed + 0x6D2B79F5) | 0;
+    var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  var cows = [];
+  function addCow(x, y, rot, s) { cows.push([x, y, rot, s || 1]); }
+
+  function barnShell(g, b) {
+    var t = 0.25, ch = b.eave - 1.2;
+    box(g, b.x, b.y, b.w, t, 1.2, mat.plinth); box(g, b.x, b.y + b.d - t, b.w, t, 1.2, mat.plinth);
+    box(g, b.x, b.y, t, b.d, 1.2, mat.plinth); box(g, b.x + b.w - t, b.y, t, b.d, 1.2, mat.plinth);
+    [box(g, b.x, b.y, b.w, 0.08, ch, mat.curtain, 1.2, false), box(g, b.x, b.y + b.d - 0.08, b.w, 0.08, ch, mat.curtain, 1.2, false),
+     box(g, b.x, b.y, 0.08, b.d, ch, mat.curtain, 1.2, false), box(g, b.x + b.w - 0.08, b.y, 0.08, b.d, ch, mat.curtain, 1.2, false)]
+      .forEach(function (m) { m.receiveShadow = false; });
+    for (var cx = b.x; cx <= b.x + b.w + 0.01; cx += 6) {
+      var px = Math.min(cx, b.x + b.w - 0.3);
+      box(g, px, b.y, 0.3, 0.3, b.eave, mat.rail);
+      box(g, px, b.y + b.d - 0.3, 0.3, 0.3, b.eave, mat.rail);
+    }
+  }
+
+  function interiorDairy(g) {
+    var X0 = 105, Y0 = 95, segs = [4, 26, 48], pairs = [3, 22.2], k = 0;
+    box(g, X0, Y0 + 12.5, 66, 5, 0.12, mat.feed, 0, false);
+    box(g, X0, Y0 + 12.25, 66, 0.1, 1.3, mat.rail);
+    box(g, X0, Y0 + 17.65, 66, 0.1, 1.3, mat.rail);
+    var im = new THREE.InstancedMesh(new THREE.BoxGeometry(0.06, 1.1, 4.6), mat.rail, segs.length * pairs.length * 16);
+    var m4 = new THREE.Matrix4();
+    pairs.forEach(function (p) { segs.forEach(function (a) { for (var i = 0; i < 16; i++) { m4.makeTranslation(toX(X0 + a + i * 1.2), 0.55, toZ(Y0 + p + 2.4)); im.setMatrixAt(k++, m4); } }); });
+    im.castShadow = true; im.receiveShadow = true; g.add(im);
+    pairs.forEach(function (p) { [24, 46].forEach(function (c) { box(g, X0 + c - 0.4, Y0 + p + 0.6, 0.8, 3.6, 0.8, mat.metal); }); });
+    var fim = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.65, 0.65, 0.25, 16), mat.fan, 22);
+    k = 0;
+    [9.95, 20.05].forEach(function (yy) { for (var i = 0; i < 11; i++) { var mm = new THREE.Matrix4().makeRotationZ(Math.PI / 2); mm.setPosition(toX(X0 + 3 + i * 6), 3.7, toZ(Y0 + yy)); fim.setMatrixAt(k++, mm); } });
+    g.add(fim);
+    pairs.forEach(function (p) {
+      segs.forEach(function (a) {
+        for (var i = 0; i < 15; i++) {
+          var sx = X0 + a + 0.6 + i * 1.2;
+          if (rnd() < 0.6) addCow(sx, Y0 + p + 1.25, -Math.PI / 2, 1);
+          if (rnd() < 0.6) addCow(sx, Y0 + p + 3.55, Math.PI / 2, 1);
+        }
+      });
+    });
+    for (var xx = 1; xx < 65; xx += 1.5) {
+      if (rnd() < 0.45) addCow(X0 + xx, Y0 + 11.05, -Math.PI / 2, 1);
+      if (rnd() < 0.45) addCow(X0 + xx, Y0 + 18.95, Math.PI / 2, 1);
+    }
+  }
+
+  function interiorPens(g, b, count, s) {
+    var mid = b.y + b.d / 2;
+    box(g, b.x + 3, mid - 2, b.w - 6, 4, 0.12, mat.feed, 0, false);
+    box(g, b.x + 3, mid - 2.1, b.w - 6, 0.1, 1.2, mat.rail);
+    box(g, b.x + 3, mid + 2, b.w - 6, 0.1, 1.2, mat.rail);
+    for (var xx = b.x + 12; xx < b.x + b.w - 4; xx += 12) {
+      box(g, xx, b.y + 0.3, 0.1, b.d / 2 - 2.4, 1.2, mat.rail);
+      box(g, xx, mid + 2.1, 0.1, b.d / 2 - 2.4, 1.2, mat.rail);
+    }
+    for (var i = 0; i < count; i++) {
+      var north = rnd() < 0.5;
+      var cy = north ? b.y + 1.6 + rnd() * (b.d / 2 - 4.4) : mid + 3 + rnd() * (b.d / 2 - 4.4);
+      var cx = b.x + 2 + rnd() * (b.w - 4);
+      var facing = rnd() < 0.4 ? (north ? -Math.PI / 2 : Math.PI / 2) : rnd() * Math.PI * 2;
+      addCow(cx, cy, facing, s);
+    }
+  }
+
+  function interiorParlor(g) {
+    box(g, 203, 101.3, 0.2, 17.4, 2.6, mat.wall);
+    box(g, 221, 101.3, 0.2, 17.4, 3.5, mat.wall);
+    box(g, 221, 107, 12, 0.2, 3.5, mat.wall);
+    box(g, 204, 108.5, 16, 3, 0.05, mat.pit, 0, false);
+    var rg = new THREE.BoxGeometry(1.7, 1.0, 0.06), im = new THREE.InstancedMesh(rg, mat.rail, 24), k = 0;
+    [-1, 1].forEach(function (side) {
+      for (var i = 0; i < 12; i++) {
+        var mm = new THREE.Matrix4().makeRotationY(side < 0 ? Math.PI / 4 : -Math.PI / 4);
+        mm.setPosition(toX(204.8 + i * 1.36), 0.5, toZ(side < 0 ? 106.6 : 113.4));
+        im.setMatrixAt(k++, mm);
+        if (rnd() < 0.75) addCow(204.2 + i * 1.36, side < 0 ? 105.6 : 114.4, side < 0 ? Math.PI / 4 : -Math.PI / 4, 1);
+      }
+    });
+    im.castShadow = true; g.add(im);
+    cyl(g, 224.5, 115.5, 1.5, 2.6, mat.metal);
+    cyl(g, 229.5, 115.5, 1.5, 2.6, mat.metal);
+    for (var i = 0; i < 14; i++) addCow(192.5 + rnd() * 9, 102.5 + rnd() * 15, rnd() < 0.7 ? 0 : rnd() * 6.28, 1);
+  }
+
+  function interiorCold(g) {
+    var X0 = 14, Y0 = 50;
+    box(g, X0 + 4, Y0 + 11, 6, 7, 0.06, mat.chill, 0, false);
+    box(g, X0 + 10, Y0, 7, 11, 0.06, mat.chill, 0, false);
+    box(g, X0 + 17, Y0, 7, 11, 0.06, mat.chill, 0, false);
+    box(g, X0 + 24, Y0, 6, 5, 0.06, mat.frozen, 0, false);
+    box(g, X0 + 24, Y0 + 5, 6, 9, 0.06, mat.frozen, 0, false);
+    [[4, 11, 4, 18], [10, 0, 10, 18], [17, 0, 17, 18], [20.5, 11, 20.5, 18], [24, 0, 24, 18]].forEach(function (w) { box(g, X0 + w[0] - 0.1, Y0 + w[1], 0.2, w[3] - w[1], 5.4, mat.wall); });
+    [[0, 11, 24, 11], [24, 5, 30, 5], [24, 14, 30, 14]].forEach(function (w) { box(g, X0 + w[0], Y0 + w[1] - 0.1, w[2] - w[0], 0.2, 5.4, mat.wall); });
+    for (var r = 0; r < 2; r++) for (var i = 0; i < 6; i++) box(g, X0 + 11 + i * 1.0, Y0 + 3 + r * 4, 0.5, 0.4, 2.0, mat.carcass, 2.2);
+    for (var j = 0; j < 4; j++) box(g, X0 + 24.6, Y0 + 5.6 + j * 2, 4.8, 1.2, 3.2, mat.hutch);
+  }
+
+  var roofs = [], pickables = [];
+  function build(b) {
+    var g = new THREE.Group(), roof = new THREE.Group(), rm = roofMat[b.z], top = 4;
+    switch (b.kind) {
+      case 'flat':
+        box(g, b.x, b.y, b.w, b.d, b.h, mat.wall);
+        box(roof, b.x - 0.2, b.y - 0.2, b.w + 0.4, b.d + 0.4, 0.35, rm, b.h);
+        if (b.windows) {
+          [1.3, 4.6].forEach(function (h) { box(g, b.x + 2, b.y + b.d, b.w - 4, 0.12, 1.1, mat.dark, h, false); box(g, b.x + b.w, b.y + 2, 0.12, b.d - 4, 1.1, mat.dark, h, false); });
+        }
+        if (b.n === 1) box(g, 305, 130.25, 9, 3.5, 0.06, mat.disinf, 0, false);
+        top = b.h + 0.4; break;
+      case 'slab':
+        box(g, b.x, b.y, b.w, b.d, b.h, mat.scale, 0, false); top = 1; break;
+      case 'gable':
+        box(g, b.x, b.y, b.w, b.d, b.eave, mat.wall);
+        roof.add(roofMesh(b, rm)); roof.add(gableMesh(b, mat.wallDS));
+        if (b.doors) for (var i = 0; i < 4; i++) box(g, b.x + 3 + i * 10, b.y + b.d, 6, 0.12, 4.5, mat.dark, 0, false);
+        if (b.n >= 16 && b.n <= 18) box(g, b.x + 2, b.y + b.d, b.w - 4, 0.12, 0.8, mat.dark, 1.6, false);
+        if (b.bunkers) [226, 238].forEach(function (cx) {
+          cyl(g, cx, 39, 3.2, 10, mat.metal);
+          var cone = new THREE.Mesh(new THREE.ConeGeometry(3.2, 2.2, 28), mat.metal);
+          cone.position.set(toX(cx), 11.1, toZ(39)); cone.castShadow = true; g.add(cone);
+        });
+        top = b.bunkers ? 12.5 : b.ridge; break;
+      case 'barn':
+        barnShell(g, b);
+        roof.add(roofMesh(b, rm, b.vent ? 0.5 : 0)); roof.add(gableMesh(b, mat.wallDS));
+        if (b.vent) box(roof, b.x - 0.6, b.y + b.d / 2 - 0.9, b.w + 1.2, 1.8, 0.15, rm, b.ridge + 0.45);
+        if (b.n === 5) interiorDairy(g);
+        else if (b.n === 7) interiorPens(g, b, 26, 1);
+        else if (b.n === 8) interiorPens(g, b, 34, 0.55);
+        else if (b.n === 9) interiorPens(g, b, 40, 0.85);
+        else if (b.n === 10) interiorPens(g, b, 46, 0.9);
+        top = b.ridge; break;
+      case 'parlor':
+        shell(g, b, b.eave);
+        roof.add(roofMesh(b, rm)); roof.add(gableMesh(b, mat.wallDS));
+        box(g, 183, 107, 8, 6, 3.5, mat.wall);
+        box(roof, 183, 106.7, 8, 6.6, 0.25, rm, 3.5);
+        interiorParlor(g);
+        top = b.ridge; break;
+      case 'cold':
+        shell(g, b, b.h);
+        box(roof, b.x - 0.2, b.y - 0.2, b.w + 0.4, b.d + 0.4, 0.4, rm, b.h);
+        [0, 1, 2].forEach(function (i) { box(roof, b.x + 4 + i * 8, b.y + 3, 3, 1.6, 1.2, mat.metal, b.h + 0.4); });
+        interiorCold(g);
+        top = b.h + 1.6; break;
+      case 'naves':
+        for (var yy = b.y; yy <= b.y + b.d + 0.01; yy += 6) {
+          var py = Math.min(yy, b.y + b.d - 0.3);
+          box(g, b.x, py, 0.3, 0.3, b.eave, mat.rail); box(g, b.x + b.w - 0.3, py, 0.3, 0.3, b.eave, mat.rail);
+        }
+        roof.add(roofMesh(b, rm));
+        box(g, b.x + 1.5, b.y + 3, b.w - 3, b.d - 6, b.fill === 'hay' ? 5 : 4.2, b.fill === 'hay' ? mat.hay : mat.straw);
+        top = b.ridge; break;
+      case 'silo':
+        box(g, b.x, b.y, b.w, b.d, 0.2, mat.concrete, 0, false);
+        [105, 117.5, 130, 142.5, 154.6].forEach(function (wx) { box(g, wx, b.y, 0.4, b.d, 3, mat.concrete); });
+        box(g, b.x, b.y, b.w, 0.4, 3, mat.concrete);
+        box(g, 105.4, 18, 12, 42, 3.3, mat.tarp, 0.2); box(g, 117.9, 25, 12.1, 35, 3.3, mat.tarp, 0.2);
+        box(g, 130.4, 40, 12.1, 20, 3.3, mat.tarp, 0.2); box(g, 142.9, 15.4, 11.7, 26, 3.1, mat.tarpW, 0.2);
+        top = 4; break;
+      case 'yard':
+        box(g, b.x, b.y, b.w, b.d, 0.08, mat.dirt, 0, false);
+        box(g, b.x, b.y, b.w, 0.12, 1.3, mat.rail); box(g, b.x, b.y + b.d - 0.12, b.w, 0.12, 1.3, mat.rail);
+        [b.x, 152, 200, b.x + b.w - 0.12].forEach(function (xx) { box(g, xx, b.y, 0.12, b.d, 1.3, mat.rail); });
+        [125, 176, 222].forEach(function (cx) {
+          box(g, cx - 7, b.y + 6, 14, 10, 0.1, mat.shade, 4.2);
+          [[cx - 7, b.y + 6], [cx + 6.8, b.y + 6], [cx - 7, b.y + 15.8], [cx + 6.8, b.y + 15.8]].forEach(function (p) { box(g, p[0], p[1], 0.2, 0.2, 4.2, mat.rail); });
+        });
+        for (var c = 0; c < 26; c++) addCow(b.x + 3 + rnd() * (b.w - 6), b.y + 2 + rnd() * (b.d - 4), rnd() * 6.28, 0.95);
+        top = 5; break;
+      case 'manure':
+        box(g, b.x, b.y, b.w, b.d, 0.2, mat.concrete, 0, false);
+        box(g, b.x, b.y, b.w, 0.3, 2, mat.concrete); box(g, b.x, b.y + b.d - 0.3, b.w, 0.3, 2, mat.concrete); box(g, b.x, b.y, 0.3, b.d, 2, mat.concrete);
+        [[30, 163, 10, 8], [49, 160, 8, 7], [60, 170, 7, 6]].forEach(function (p) {
+          var s = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 12), mat.manure);
+          s.scale.set(p[2], 2.2, p[3]); s.position.set(toX(p[0]), 0.2, toZ(p[1])); s.castShadow = true; s.receiveShadow = true; g.add(s);
+        });
+        top = 3.5; break;
+      case 'lagoon':
+        box(g, b.x, b.y, b.w, b.d, 1.2, mat.earth);
+        box(g, b.x + 2, b.y + 2, b.w - 4, b.d - 4, 0.05, mat.lagoon, 1.2, false);
+        top = 2; break;
+      case 'digester':
+        [22, 36].forEach(function (cx) {
+          cyl(g, cx, 102, 6, 5, mat.concrete);
+          var dme = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2), mat.dome);
+          dme.scale.set(1, 0.55, 1); dme.position.set(toX(cx), 5, toZ(102)); dme.castShadow = true; g.add(dme);
+        });
+        top = 9; break;
+      case 'water':
+        cyl(g, 271, 88, 3.6, 2.6, mat.tank); cyl(g, 280, 88, 3.6, 2.6, mat.tank);
+        box(g, 288, 84, 10, 8, 3, mat.wall); box(roof, 287.8, 83.8, 10.4, 8.4, 0.3, rm, 3);
+        top = 4; break;
+      case 'trafo':
+        box(g, b.x, b.y, b.w, b.d, 0.25, mat.concrete, 0, false);
+        box(g, b.x + 1, b.y + 1.5, 3, 3, 2.4, mat.metal, 0.25);
+        box(g, b.x + 5, b.y + 1.2, 6, 3.6, 2.6, mat.genset, 0.25);
+        top = 3; break;
+    }
+    g.add(roof); roofs.push(roof);
+    g.traverse(function (o) { if (o.isMesh) { o.userData.n = b.n; pickables.push(o); } });
+    scene.add(g);
+    b.group = g;
+    b.top = top;
+    b.anchor = new THREE.Vector3(toX(b.x + b.w / 2), top + 2.5, toZ(b.y + b.d / 2));
+  }
+
+  // ground, site pad, roads
+  var ground = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400), mat.grass);
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -0.05; ground.receiveShadow = true; scene.add(ground);
+  box(scene, 0, 0, 320, 250, 0.03, mat.pad, -0.02, false);
+  [[160, 128, 160, 8], [105, 74, 157, 8], [254, 74, 8, 62], [0, 128, 100, 8], [92, 20, 8, 190], [74, 160, 18, 8], [320, 128, 260, 8], [-240, 128, 240, 8]]
+    .forEach(function (r) { box(scene, r[0], r[1], r[2], r[3], 0.06, mat.road, 0, false); });
+
+  B.forEach(build);
+
+  // calf hutches
+  (function () {
+    var im = new THREE.InstancedMesh(new THREE.BoxGeometry(1.3, 1.25, 2.2), mat.hutch, 40), m4 = new THREE.Matrix4(), k = 0;
+    [167.5, 171.8].forEach(function (yy) { for (var i = 0; i < 20; i++) { m4.makeTranslation(toX(177 + i * 2.3), 0.62, toZ(yy)); im.setMatrixAt(k++, m4); } });
+    im.castShadow = true; im.receiveShadow = true; scene.add(im);
+  })();
+
+  // fence
+  (function () {
+    var posts = [], segs = [];
+    function side(x1, y1, x2, y2, gate) {
+      var len = Math.hypot(x2 - x1, y2 - y1), n = Math.round(len / 5);
+      for (var i = 0; i <= n; i++) {
+        var t = i / n, px = x1 + (x2 - x1) * t, py = y1 + (y2 - y1) * t;
+        if (gate && py > gate[0] && py < gate[1]) continue;
+        posts.push([px, py]);
+      }
+      if (gate) { segs.push([x1, y1, x2, gate[0]]); segs.push([x1, gate[1], x2, y2]); } else segs.push([x1, y1, x2, y2]);
+    }
+    side(0, 0, 320, 0); side(0, 250, 320, 250); side(0, 0, 0, 250, [127, 137]); side(320, 0, 320, 250, [127, 137]);
+    var im = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.06, 0.06, 2, 6), mat.fence, posts.length), m4 = new THREE.Matrix4();
+    posts.forEach(function (p, i) { m4.makeTranslation(toX(p[0]), 1, toZ(p[1])); im.setMatrixAt(i, m4); });
+    scene.add(im);
+    segs.forEach(function (s) {
+      var horiz = s[1] === s[3];
+      [0.9, 1.9].forEach(function (h) {
+        if (horiz) box(scene, s[0], s[1] - 0.03, s[2] - s[0], 0.06, 0.06, mat.fence, h, false);
+        else box(scene, s[0] - 0.03, s[1], 0.06, s[3] - s[1], 0.06, mat.fence, h, false);
+      });
+    });
+  })();
+
+  // poplar windbreak
+  (function () {
+    var pts = [];
+    [8, 14].forEach(function (off, row) {
+      var x0 = -off, x1 = 320 + off, y0 = -off, y1 = 250 + off, step = 7, sh = row * 3.5;
+      for (var x = x0 + sh; x <= x1; x += step) { pts.push([x, y0]); pts.push([x, y1]); }
+      for (var y = y0 + step + sh; y < y1; y += step) { if (Math.abs(y - 132) > 16) { pts.push([x0, y]); pts.push([x1, y]); } }
+    });
+    var trunk = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.22, 0.3, 3, 6), mat.trunk, pts.length);
+    var crown = new THREE.InstancedMesh(new THREE.ConeGeometry(1.7, 9, 8), mat.crown, pts.length);
+    var m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), v = new THREE.Vector3(), s = new THREE.Vector3();
+    pts.forEach(function (p, i) {
+      var k = 0.8 + rnd() * 0.45;
+      m4.compose(v.set(toX(p[0]), 1.5 * k, toZ(p[1])), q, s.set(k, k, k)); trunk.setMatrixAt(i, m4);
+      m4.compose(v.set(toX(p[0]), (3 + 4.5) * k, toZ(p[1])), q, s.set(k, k, k)); crown.setMatrixAt(i, m4);
+    });
+    trunk.castShadow = crown.castShadow = true;
+    scene.add(trunk); scene.add(crown);
+  })();
+
+  // cows
+  (function () {
+    var N = cows.length;
+    var body = new THREE.InstancedMesh(new THREE.BoxGeometry(2.1, 0.95, 0.8), mat.cowBody, N);
+    var head = new THREE.InstancedMesh(new THREE.BoxGeometry(0.55, 0.5, 0.42), mat.cowHead, N);
+    var legs = new THREE.InstancedMesh(new THREE.BoxGeometry(0.16, 0.75, 0.16), mat.cowLeg, N * 4);
+    var base = new THREE.Matrix4(), part = new THREE.Matrix4(), out = new THREE.Matrix4(), q = new THREE.Quaternion(),
+        sc2 = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), pos = new THREE.Vector3();
+    cows.forEach(function (c, i) {
+      q.setFromAxisAngle(up, c[2]); sc2.set(c[3], c[3], c[3]);
+      base.compose(pos.set(toX(c[0]), 0, toZ(c[1])), q, sc2);
+      part.makeTranslation(0, 1.12, 0); body.setMatrixAt(i, out.multiplyMatrices(base, part));
+      part.makeTranslation(1.25, 1.38, 0); head.setMatrixAt(i, out.multiplyMatrices(base, part));
+      [[0.72, 0.28], [0.72, -0.28], [-0.72, 0.28], [-0.72, -0.28]].forEach(function (l, j) {
+        part.makeTranslation(l[0], 0.375, l[1]); legs.setMatrixAt(i * 4 + j, out.multiplyMatrices(base, part));
+      });
+    });
+    [body, head, legs].forEach(function (m) { m.castShadow = true; m.receiveShadow = true; scene.add(m); });
+  })();
+
+  // selection box
+  var selBox = new THREE.Box3();
+  var helper = new THREE.Box3Helper(selBox, 0xF2B33D);
+  helper.visible = false; scene.add(helper);
+
+  // UI: zones, list, labels
+  var zonesEl = document.getElementById('zones');
+  Object.keys(ZONES).forEach(function (k) {
+    var li = document.createElement('li');
+    li.innerHTML = '<i></i>' + ZONES[k].name;
+    li.style.setProperty('--zc', ZONES[k].c);
+    zonesEl.appendChild(li);
+  });
+  var listEl = document.getElementById('blist'), labelsEl = document.getElementById('labels');
+  B.forEach(function (b) {
+    var li = document.createElement('li'), bt = document.createElement('button');
+    bt.type = 'button'; bt.style.setProperty('--zc', ZONES[b.z].c);
+    bt.innerHTML = '<b>' + b.n + '</b><span>' + b.name + '</span>';
+    bt.addEventListener('click', function () { select(b, true); if (window.innerWidth < 640) document.getElementById('dList').open = false; });
+    li.appendChild(bt); listEl.appendChild(li);
+    var lb = document.createElement('button');
+    lb.type = 'button'; lb.className = 'lbl'; lb.style.setProperty('--zc', ZONES[b.z].c);
+    lb.setAttribute('aria-label', b.n + ': ' + b.name);
+    lb.innerHTML = '<span class="num">' + b.n + '</span><span class="name">' + b.name + '</span>';
+    lb.addEventListener('click', function () { select(b, false); });
+    labelsEl.appendChild(lb); b.label = lb;
+  });
+
+  var info = document.getElementById('info'), current = null;
+  function select(b, fly) {
+    if (current && current.label) current.label.classList.remove('sel');
+    current = b;
+    if (!b) { info.hidden = true; helper.visible = false; return; }
+    b.label.classList.add('sel');
+    selBox.min.set(toX(b.x) - 1, 0, toZ(b.y) - 1);
+    selBox.max.set(toX(b.x + b.w) + 1, b.top + 0.5, toZ(b.y + b.d) + 1);
+    helper.visible = true;
+    info.style.setProperty('--zc', ZONES[b.z].c);
+    document.getElementById('iZone').textContent = b.n + '-bino. ' + ZONES[b.z].name + ' zonasi';
+    document.getElementById('iName').textContent = b.name;
+    document.getElementById('iSize').textContent = b.size;
+    document.getElementById('iArea').textContent = b.area;
+    document.getElementById('iCap').textContent = b.cap;
+    document.getElementById('iDesc').textContent = b.desc;
+    info.hidden = false;
+    if (fly) focus(b);
+  }
+  document.getElementById('iClose').addEventListener('click', function () { select(null); });
+  document.getElementById('iZoom').addEventListener('click', function () { if (current) focus(current); });
+
+  // camera motion
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var anim = null;
+  function flyTo(pos, target, dur) {
+    if (reduce) { camera.position.copy(pos); controls.target.copy(target); controls.update(); return; }
+    var p0 = camera.position.clone(), t0 = controls.target.clone(), start = performance.now();
+    dur = dur || 900;
+    anim = function (now) {
+      var k = Math.min(1, (now - start) / dur);
+      var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      camera.position.lerpVectors(p0, pos, e);
+      controls.target.lerpVectors(t0, target, e);
+      if (k >= 1) anim = null;
+    };
+  }
+  function homeView() {
+    var k = camera.aspect < 1 ? 1.8 : 1.12;
+    var t = app.clientWidth > 900 ? new THREE.Vector3(-16, 0, 18) : new THREE.Vector3(8, 0, 6);
+    return { pos: t.clone().add(new THREE.Vector3(207 * k, 195 * k, 259 * k)), target: t };
+  }
+  function focus(b) {
+    var c = new THREE.Vector3(toX(b.x + b.w / 2), 3, toZ(b.y + b.d / 2));
+    var r = Math.max(b.w, b.d) * 1.5 + 32;
+    if (camera.aspect < 1) r *= 1.5;
+    var dir = camera.position.clone().sub(controls.target).normalize();
+    dir.y = Math.max(dir.y, 0.55); dir.normalize();
+    flyTo(c.clone().add(dir.multiplyScalar(r)), c);
+  }
+  document.getElementById('bHome').addEventListener('click', function () { var h = homeView(); flyTo(h.pos, h.target); });
+  document.getElementById('bTop').addEventListener('click', function () {
+    flyTo(new THREE.Vector3(0, camera.aspect < 1 ? 720 : 470, 0.01), new THREE.Vector3(0, 0, 0));
+  });
+  var bRoof = document.getElementById('bRoof'), bNames = document.getElementById('bNames');
+  bRoof.addEventListener('click', function () {
+    var off = bRoof.getAttribute('aria-pressed') !== 'true';
+    bRoof.setAttribute('aria-pressed', String(off));
+    roofs.forEach(function (r) { r.visible = !off; });
+  });
+  bNames.addEventListener('click', function () {
+    var on = bNames.getAttribute('aria-pressed') !== 'true';
+    bNames.setAttribute('aria-pressed', String(on));
+    labelsEl.classList.toggle('names', on);
+  });
+
+  // picking
+  var ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), downAt = null;
+  renderer.domElement.addEventListener('pointerdown', function (e) { downAt = [e.clientX, e.clientY]; });
+  renderer.domElement.addEventListener('pointerup', function (e) {
+    if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 6) return;
+    var r = renderer.domElement.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    var hits = ray.intersectObjects(pickables, false).filter(function (h) { return h.object.parent && h.object.parent.visible !== false; });
+    if (hits.length) { var n = hits[0].object.userData.n; select(B[n - 1], false); } else select(null);
+  });
+
+  // resize
+  function resize() {
+    var w = app.clientWidth, h = app.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / Math.max(h, 1);
+    camera.updateProjectionMatrix();
+  }
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(app); else window.addEventListener('resize', resize);
+  resize();
+  var h0 = homeView();
+  camera.position.copy(h0.pos); controls.target.copy(h0.target); controls.update();
+  if (window.innerWidth < 640) document.getElementById('dInfo').open = false;
+
+  // loop
+  var needle = document.getElementById('needle'), v = new THREE.Vector3();
+  function loop(now) {
+    if (anim) anim(now);
+    controls.update();
+    var W = app.clientWidth, H = app.clientHeight;
+    B.forEach(function (b) {
+      v.copy(b.anchor).project(camera);
+      var hide = v.z > 1 || Math.abs(v.x) > 1.1 || Math.abs(v.y) > 1.1;
+      if (hide) { b.label.hidden = true; return; }
+      b.label.hidden = false;
+      b.label.style.transform = 'translate(' + ((v.x + 1) / 2 * W).toFixed(1) + 'px,' + ((1 - v.y) / 2 * H).toFixed(1) + 'px) translate(-50%,-100%)';
+    });
+    needle.setAttribute('transform', 'rotate(' + (controls.getAzimuthalAngle() * 180 / Math.PI).toFixed(1) + ' 20 20)');
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  }
+  loadingEl.hidden = true;
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
